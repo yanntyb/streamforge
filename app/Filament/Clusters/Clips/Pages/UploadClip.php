@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Filament\Pages;
+namespace App\Filament\Clusters\Clips\Pages;
 
+use App\Filament\Clusters\Clips\ClipsCluster;
 use App\Http\Integrations\TikTok\Requests\GetPublishStatus;
 use App\Http\Integrations\TikTok\Requests\InitVideoUpload;
 use App\Http\Integrations\TikTok\TikTokConnector;
@@ -23,13 +24,13 @@ use Saloon\Http\Auth\TokenAuthenticator;
  */
 class UploadClip extends Page
 {
+    protected static ?string $cluster = ClipsCluster::class;
+
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-arrow-up-tray';
 
     protected static ?string $navigationLabel = 'Upload Clip';
 
     protected static ?string $slug = 'upload-clip';
-
-    protected static ?int $navigationSort = 2;
 
     protected string $view = 'filament.pages.upload-clip';
 

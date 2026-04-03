@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Filament\Pages;
+namespace App\Filament\Clusters\Plateform\Pages;
 
+use App\Filament\Clusters\Plateform\PlateformCluster;
 use App\Http\Integrations\TikTok\TikTokConnector;
 use App\Models\TikTokCredential;
 use Filament\Actions\Action;
@@ -16,6 +17,8 @@ use Illuminate\Support\Facades\Auth;
 class TikTokAccounts extends Page implements HasTable
 {
     use InteractsWithTable;
+
+    protected static ?string $cluster = PlateformCluster::class;
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-link';
 

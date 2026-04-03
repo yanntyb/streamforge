@@ -7,7 +7,7 @@ test('upload page shows link when no active accounts', function () {
     $user = User::factory()->create();
 
     $this->actingAs($user)
-        ->get('/dashboard/upload-clip')
+        ->get('/dashboard/clips/upload-clip')
         ->assertOk()
         ->assertSee('No active TikTok accounts');
 });
@@ -17,7 +17,7 @@ test('upload page shows form when active account exists', function () {
     TikTokCredential::factory()->create(['user_id' => $user->id]);
 
     $this->actingAs($user)
-        ->get('/dashboard/upload-clip')
+        ->get('/dashboard/clips/upload-clip')
         ->assertOk()
         ->assertSee('Upload to TikTok');
 });
@@ -27,7 +27,7 @@ test('tiktok accounts page shows connected accounts', function () {
     TikTokCredential::factory()->create(['user_id' => $user->id]);
 
     $this->actingAs($user)
-        ->get('/dashboard/tiktok-accounts')
+        ->get('/dashboard/plateform/tiktok-accounts')
         ->assertOk()
         ->assertSee('Connected');
 });
@@ -37,7 +37,7 @@ test('tiktok accounts page shows expired badge', function () {
     TikTokCredential::factory()->expired()->create(['user_id' => $user->id]);
 
     $this->actingAs($user)
-        ->get('/dashboard/tiktok-accounts')
+        ->get('/dashboard/plateform/tiktok-accounts')
         ->assertOk()
         ->assertSee('Expired');
 });

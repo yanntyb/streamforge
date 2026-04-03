@@ -12,12 +12,12 @@ class TikTokCallbackController extends Controller
     public function __invoke(Request $request, TikTokConnector $connector): RedirectResponse
     {
         if ($request->has('error')) {
-            return redirect('/dashboard/tiktok-accounts')
+            return redirect('/dashboard/plateform/tiktok-accounts')
                 ->with('error', 'TikTok authorization was denied: '.$request->string('error_description', 'Unknown error'));
         }
 
         if ($request->input('state') !== session('tiktok_oauth_state')) {
-            return redirect('/dashboard/tiktok-accounts')
+            return redirect('/dashboard/plateform/tiktok-accounts')
                 ->with('error', 'Invalid OAuth state. Please try again.');
         }
 
@@ -36,7 +36,7 @@ class TikTokCallbackController extends Controller
             ],
         );
 
-        return redirect('/dashboard/tiktok-accounts')
+        return redirect('/dashboard/plateform/tiktok-accounts')
             ->with('success', 'TikTok account connected successfully.');
     }
 }

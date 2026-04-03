@@ -5,7 +5,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Http;
 
 test('guests cannot access tiktok accounts page', function () {
-    $this->get('/dashboard/tiktok-accounts')
+    $this->get('/dashboard/plateform/tiktok-accounts')
         ->assertRedirect('/dashboard/login');
 });
 
@@ -13,7 +13,7 @@ test('authenticated users can view tiktok accounts page', function () {
     $user = User::factory()->create();
 
     $this->actingAs($user)
-        ->get('/dashboard/tiktok-accounts')
+        ->get('/dashboard/plateform/tiktok-accounts')
         ->assertOk();
 });
 
@@ -36,7 +36,7 @@ test('tiktok callback stores credentials', function () {
             'code' => 'test_code',
             'state' => 'test_state',
         ]))
-        ->assertRedirect('/dashboard/tiktok-accounts')
+        ->assertRedirect('/dashboard/plateform/tiktok-accounts')
         ->assertSessionHas('success');
 
     $this->assertDatabaseHas('tik_tok_credentials', [
@@ -54,7 +54,7 @@ test('tiktok callback rejects invalid state', function () {
             'code' => 'test_code',
             'state' => 'wrong_state',
         ]))
-        ->assertRedirect('/dashboard/tiktok-accounts')
+        ->assertRedirect('/dashboard/plateform/tiktok-accounts')
         ->assertSessionHas('error');
 
     $this->assertDatabaseCount('tik_tok_credentials', 0);
@@ -68,7 +68,7 @@ test('tiktok callback handles denied authorization', function () {
             'error' => 'access_denied',
             'error_description' => 'User denied access',
         ]))
-        ->assertRedirect('/dashboard/tiktok-accounts')
+        ->assertRedirect('/dashboard/plateform/tiktok-accounts')
         ->assertSessionHas('error');
 });
 
