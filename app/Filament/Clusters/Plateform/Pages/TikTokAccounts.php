@@ -22,7 +22,9 @@ class TikTokAccounts extends Page implements HasTable
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-link';
 
-    protected static ?string $navigationLabel = 'TikTok Accounts';
+    protected static ?string $navigationLabel = 'TikTok';
+
+    protected static ?string $title = 'TikTok';
 
     protected static ?string $slug = 'tiktok-accounts';
 
@@ -36,28 +38,28 @@ class TikTokAccounts extends Page implements HasTable
             ->query(Auth::user()->tiktokCredentials()->getQuery())
             ->columns([
                 TextColumn::make('tiktok_username')
-                    ->label('Account')
+                    ->label('Compte')
                     ->default(fn (TikTokCredential $record) => $record->tiktok_open_id)
                     ->searchable(),
                 TextColumn::make('status')
-                    ->label('Status')
+                    ->label('Statut')
                     ->badge()
-                    ->getStateUsing(fn (TikTokCredential $record) => $record->isExpired() ? 'Expired' : 'Connected')
-                    ->color(fn (string $state) => $state === 'Expired' ? 'danger' : 'success'),
+                    ->getStateUsing(fn (TikTokCredential $record) => $record->isExpired() ? 'Expiré' : 'Connecté')
+                    ->color(fn (string $state) => $state === 'Expiré' ? 'danger' : 'success'),
                 TextColumn::make('token_expires_at')
-                    ->label('Expires')
+                    ->label('Expiration')
                     ->since(),
             ])
             ->actions([
                 Action::make('disconnect')
-                    ->label('Disconnect')
+                    ->label('Déconnecter')
                     ->color('danger')
                     ->icon('heroicon-o-trash')
                     ->requiresConfirmation()
                     ->action(fn (TikTokCredential $record) => $this->disconnectTikTok($record->id)),
             ])
-            ->emptyStateHeading('No TikTok accounts connected yet.')
-            ->emptyStateDescription('Click "Add TikTok Account" to connect your first account.')
+            ->emptyStateHeading('Aucun compte TikTok connecté.')
+            ->emptyStateDescription('Cliquez sur « Ajouter un compte TikTok » pour connecter votre premier compte.')
             ->emptyStateIcon('heroicon-o-link');
     }
 
@@ -65,7 +67,7 @@ class TikTokAccounts extends Page implements HasTable
     {
         return [
             Action::make('connect')
-                ->label('Add TikTok Account')
+                ->label('Ajouter un compte TikTok')
                 ->icon('heroicon-o-plus')
                 ->action('connectTikTok'),
         ];
@@ -86,7 +88,7 @@ class TikTokAccounts extends Page implements HasTable
         Auth::user()->tiktokCredentials()->where('id', $credentialId)->delete();
 
         Notification::make()
-            ->title('TikTok account disconnected.')
+            ->title('Compte TikTok déconnecté.')
             ->success()
             ->send();
     }

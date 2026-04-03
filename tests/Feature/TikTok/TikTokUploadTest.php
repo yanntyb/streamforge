@@ -9,7 +9,7 @@ test('upload page shows link when no active accounts', function () {
     $this->actingAs($user)
         ->get('/dashboard/clips/upload-clip')
         ->assertOk()
-        ->assertSee('No active TikTok accounts');
+        ->assertSee('Aucun compte TikTok actif');
 });
 
 test('upload page shows form when active account exists', function () {
@@ -19,7 +19,7 @@ test('upload page shows form when active account exists', function () {
     $this->actingAs($user)
         ->get('/dashboard/clips/upload-clip')
         ->assertOk()
-        ->assertSee('Upload to TikTok');
+        ->assertSee('Publier sur TikTok');
 });
 
 test('tiktok accounts page shows connected accounts', function () {
@@ -29,7 +29,7 @@ test('tiktok accounts page shows connected accounts', function () {
     $this->actingAs($user)
         ->get('/dashboard/plateform/tiktok-accounts')
         ->assertOk()
-        ->assertSee('Connected');
+        ->assertSee('Connecté');
 });
 
 test('tiktok accounts page shows expired badge', function () {
@@ -39,7 +39,7 @@ test('tiktok accounts page shows expired badge', function () {
     $this->actingAs($user)
         ->get('/dashboard/plateform/tiktok-accounts')
         ->assertOk()
-        ->assertSee('Expired');
+        ->assertSee('Expiré');
 });
 
 test('user can have multiple tiktok accounts', function () {

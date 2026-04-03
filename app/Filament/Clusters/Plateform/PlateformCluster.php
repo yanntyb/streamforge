@@ -10,7 +10,7 @@ class PlateformCluster extends Cluster
 {
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedSquares2x2;
 
-    protected static ?string $navigationLabel = 'Plateform';
+    protected static ?string $navigationLabel = 'Plateformes';
 
     protected static ?int $navigationSort = 3;
 }

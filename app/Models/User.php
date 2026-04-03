@@ -57,4 +57,12 @@ class User extends Authenticatable implements FilamentUser
     {
         return $this->hasMany(TikTokCredential::class);
     }
+
+    /**
+     * @return HasMany<Clip, $this>
+     */
+    public function clips(): HasMany
+    {
+        return $this->hasMany(Clip::class);
+    }
 }
