@@ -39,7 +39,7 @@ test('tiktok accounts page shows expired badge', function () {
     $this->actingAs($user)
         ->get('/dashboard/tiktok-accounts')
         ->assertOk()
-        ->assertSee('Token expired');
+        ->assertSee('Expired');
 });
 
 test('user can have multiple tiktok accounts', function () {

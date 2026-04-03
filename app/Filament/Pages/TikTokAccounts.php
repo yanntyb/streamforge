@@ -3,13 +3,20 @@
 namespace App\Filament\Pages;
 
 use App\Http\Integrations\TikTok\TikTokConnector;
+use App\Models\TikTokCredential;
+use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Concerns\InteractsWithTable;
+use Filament\Tables\Contracts\HasTable;
+use Filament\Tables\Table;
 use Illuminate\Support\Facades\Auth;
-use Livewire\Attributes\Computed;
 
-class TikTokAccounts extends Page
+class TikTokAccounts extends Page implements HasTable
 {
+    use InteractsWithTable;
+
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-link';
 
     protected static ?string $navigationLabel = 'TikTok Accounts';
@@ -20,10 +27,45 @@ class TikTokAccounts extends Page
 
     protected string $view = 'filament.pages.tiktok-accounts';
 
-    #[Computed]
-    public function credentials()
+    public function table(Table $table): Table
     {
-        return Auth::user()->tiktokCredentials;
+        return $table
+            ->query(Auth::user()->tiktokCredentials()->getQuery())
+            ->columns([
+                TextColumn::make('tiktok_username')
+                    ->label('Account')
+                    ->default(fn (TikTokCredential $record) => $record->tiktok_open_id)
+                    ->searchable(),
+                TextColumn::make('status')
+                    ->label('Status')
+                    ->badge()
+                    ->getStateUsing(fn (TikTokCredential $record) => $record->isExpired() ? 'Expired' : 'Connected')
+                    ->color(fn (string $state) => $state === 'Expired' ? 'danger' : 'success'),
+                TextColumn::make('token_expires_at')
+                    ->label('Expires')
+                    ->since(),
+            ])
+            ->actions([
+                Action::make('disconnect')
+                    ->label('Disconnect')
+                    ->color('danger')
+                    ->icon('heroicon-o-trash')
+                    ->requiresConfirmation()
+                    ->action(fn (TikTokCredential $record) => $this->disconnectTikTok($record->id)),
+            ])
+            ->emptyStateHeading('No TikTok accounts connected yet.')
+            ->emptyStateDescription('Click "Add TikTok Account" to connect your first account.')
+            ->emptyStateIcon('heroicon-o-link');
+    }
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            Action::make('connect')
+                ->label('Add TikTok Account')
+                ->icon('heroicon-o-plus')
+                ->action('connectTikTok'),
+        ];
     }
 
     public function connectTikTok(): void
