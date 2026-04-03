@@ -12,20 +12,18 @@ class TikTokCallbackController extends Controller
     public function __invoke(Request $request, TikTokConnector $connector): RedirectResponse
     {
         if ($request->has('error')) {
-            return redirect()->route('tiktok.manage')
+            return redirect('/dashboard/tiktok-accounts')
                 ->with('error', 'TikTok authorization was denied: '.$request->string('error_description', 'Unknown error'));
         }
 
         if ($request->input('state') !== session('tiktok_oauth_state')) {
-            return redirect()->route('tiktok.manage')
+            return redirect('/dashboard/tiktok-accounts')
                 ->with('error', 'Invalid OAuth state. Please try again.');
         }
 
         session()->forget('tiktok_oauth_state');
 
         $tokens = $connector->exchangeCodeForTokens($request->input('code'));
-
-        \Log::info('TikTok token response', $tokens);
 
         TikTokCredential::updateOrCreate(
             ['tiktok_open_id' => $tokens['open_id']],
@@ -38,7 +36,7 @@ class TikTokCallbackController extends Controller
             ],
         );
 
-        return redirect()->route('tiktok.manage')
+        return redirect('/dashboard/tiktok-accounts')
             ->with('success', 'TikTok account connected successfully.');
     }
 }

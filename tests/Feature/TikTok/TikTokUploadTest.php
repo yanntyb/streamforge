@@ -3,43 +3,48 @@
 use App\Models\TikTokCredential;
 use App\Models\User;
 
-test('user can see upload form when connected', function () {
+test('upload page shows link when no active accounts', function () {
+    $user = User::factory()->create();
+
+    $this->actingAs($user)
+        ->get('/dashboard/upload-clip')
+        ->assertOk()
+        ->assertSee('No active TikTok accounts');
+});
+
+test('upload page shows form when active account exists', function () {
     $user = User::factory()->create();
     TikTokCredential::factory()->create(['user_id' => $user->id]);
 
     $this->actingAs($user)
-        ->get(route('tiktok.manage'))
+        ->get('/dashboard/upload-clip')
         ->assertOk()
-        ->assertSee('Upload a clip');
+        ->assertSee('Upload to TikTok');
 });
 
-test('user cannot see upload form when not connected', function () {
+test('tiktok accounts page shows connected accounts', function () {
     $user = User::factory()->create();
+    TikTokCredential::factory()->create(['user_id' => $user->id]);
 
     $this->actingAs($user)
-        ->get(route('tiktok.manage'))
+        ->get('/dashboard/tiktok-accounts')
         ->assertOk()
-        ->assertSee('No TikTok accounts connected yet.');
+        ->assertSee('Connected');
 });
 
-test('expired credential does not show upload form', function () {
+test('tiktok accounts page shows expired badge', function () {
     $user = User::factory()->create();
     TikTokCredential::factory()->expired()->create(['user_id' => $user->id]);
 
     $this->actingAs($user)
-        ->get(route('tiktok.manage'))
+        ->get('/dashboard/tiktok-accounts')
         ->assertOk()
-        ->assertSee('Token expired')
-        ->assertDontSee('Upload a clip');
+        ->assertSee('Token expired');
 });
 
 test('user can have multiple tiktok accounts', function () {
     $user = User::factory()->create();
     TikTokCredential::factory()->count(2)->create(['user_id' => $user->id]);
-
-    $this->actingAs($user)
-        ->get(route('tiktok.manage'))
-        ->assertOk();
 
     expect($user->tiktokCredentials)->toHaveCount(2);
 });
