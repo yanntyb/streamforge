@@ -25,6 +25,8 @@ class TikTokCallbackController extends Controller
 
         $tokens = $connector->exchangeCodeForTokens($request->input('code'));
 
+        \Log::info('TikTok token response', $tokens);
+
         TikTokCredential::updateOrCreate(
             ['tiktok_open_id' => $tokens['open_id']],
             [
